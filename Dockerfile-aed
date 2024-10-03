@@ -1,0 +1,21 @@
+FROM ubuntu:bionic
+
+ARG uid
+ARG gid
+ARG user
+ARG group
+
+RUN groupadd -g ${gid} ${group} || true
+RUN useradd -l -u ${uid} -g ${group} -m ${user} || true
+
+RUN apt-get update
+RUN apt-get install -y tzdata
+RUN apt-get upgrade -y
+RUN echo 'alias ll="ls -l --color -a"' >> ~/.bashrc
+
+RUN apt-get install -y g++
+RUN apt-get install -y cmake
+RUN apt-get install -y libgtest-dev
+
+RUN cd /usr/src/gtest && cmake CMakeLists.txt && make && cp *.a /usr/lib
+
